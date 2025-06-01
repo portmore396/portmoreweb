@@ -1,0 +1,16 @@
+{
+  "name": "portmore-shop",
+  "version": "1.0.0",
+  "description": "Portmore Shop Progressive Web App",
+  "main": "index2.html",
+  "scripts": {
+    "generate-icons": "node generate-icons.js",
+    "start": "http-server -p 8080 -c-1"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.32.1"
+  }
+} 

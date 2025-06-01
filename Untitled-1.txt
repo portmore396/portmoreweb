@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portmore Shop & Services</title>
+  <style>
+    body {
+      background: #f4f8fb;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+    }
+    h1, h2 {
+      color: #1976d2;
+      text-align: center;
+    }
+    .intro {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 32px;
+    }
+    .products, .services, .accessories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .card {
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      padding: 16px;
+      width: 220px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    }
+    .card img {
+      width: 100px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .price {
+      color: #388e3c;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+    .contact {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 1.1em;
+    }
+    .contact a {
+      color: #1976d2;
+      text-decoration: underline;
+    }
+    /* --- For dynamic product list below --- */
+    .item-list {
+      background: #ffe7e8;
+      border: 2px solid #e66465;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 32px;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 16px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      padding: 8px;
+    }
+    .item-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .item-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      min-width: 180px;
+    }
+    .item-actions button,
+    .item-actions a {
+      margin: 0;
+    }
+    .item img.product {
+      width: 120px;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .item img.product:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .item label {
+      min-width: 80px;
+    }
+    .item input[type="number"], .item input[type="text"] {
+      width: 60px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      border: 1px solid #bbb;
+    }
+    .item a {
+      margin-left: auto;
+      text-decoration: none;
+      color: #25d366;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .item a img {
+      width: 24px;
+      vertical-align: middle;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2em;
+      margin-top: 18px;
+      color: #00796b;
+    }
+    footer {
+      background: #1976d2;
+      color: #fff;
+      text-align: center;
+      padding: 12px 0;
+      margin-top: 30px;
+    }
+    address {
+      font-style: normal;
+    }
+    /* Modal styles */
+    #itemModal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    #itemModal .modal-content {
+      background: #fff;
+      padding: 24px;
+      border-radius: 10px;
+      max-width: 350px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+    #itemModal .close {
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 1.5em;
+      color: #333;
+      cursor: pointer;
+    }
+    #itemModal img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Portmore Shop & Services</h1>
+    <div class="intro">
+      Buy quality second hand/refurbished laptops, monitors, computers, mobile phones, and accessories.<br>
+      We also offer phone repair, laptop repair, phone flashing, and sell perfumes & electronics.
+    </div>
+
+    <!-- Modern product/service cards -->
+    <div class="section">
+      <h2>Laptops & Computers</h2>
+      <div class="products">
+        <div class="card">
+          <img src="laptop.png" alt="Laptop">
+          <div>Refurbished Laptops</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="monitor.png" alt="Monitor">
+          <div>Second Hand Monitors</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="desktop.png" alt="Desktop Computer">
+          <div>Refurbished Desktop Computers</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Mobile Phones</h2>
+      <div class="products">
+        <div class="card">
+          <img src="phone.png" alt="Mobile Phone">
+          <div>Second Hand/Refurbished Phones</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Services</h2>
+      <div class="services">
+        <div class="card">
+          <img src="repair.png" alt="Phone Repair">
+          <div>Phone Repair</div>
+        </div>
+        <div class="card">
+          <img src="laptop-repair.png" alt="Laptop Repair">
+          <div>Laptop Repair</div>
+        </div>
+        <div class="card">
+          <img src="flashing.png" alt="Phone Flashing">
+          <div>Phone Flashing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Perfumes</h2>
+      <div class="products">
+        <div class="card">
+          <img src="perfume.png" alt="Perfume">
+          <div>Assorted Perfumes</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Electronics & Accessories</h2>
+      <div class="accessories">
+        <div class="card">
+          <img src="earphones.png" alt="Earphones">
+          <div>Earphones</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="usb-cable.png" alt="USB Cable">
+          <div>USB Cables</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="battery.png" alt="Battery">
+          <div>Batteries</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="screen.png" alt="Phone Screen">
+          <div>Phone Screens & LCDs</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+        <div class="card">
+          <img src="electronics.png" alt="Electronics">
+          <div>Other Electronics</div>
+          <div class="price">Price: To be specified</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic/interactive product list (flash drives & memory cards) -->
+    <div class="section">
+      <h2>Flash Drives</h2>
+      <!-- Search box -->
+      <div style="text-align:center; margin-bottom: 20px;">
+        <input type="text" id="searchBox" placeholder="Search products..." style="width: 60%; padding: 8px; font-size: 1em; border-radius: 5px; border: 1px solid #bbb;">
+      </div>
+      <div class="item-list">
+        <!-- Example: Add your flash drive items here as in your previous code -->
+        <!-- 32GB Flash Drive -->
+        <div class="item">
+          <img src="toshiba-32gb.png" alt="Toshiba 32GB Flash Drive" class="product"
+            onclick="showModal('toshiba-32gb.png', 'Flash 32GB', 'Best quality, one year warranty, can hold up to 60 movies.')">
+          <div class="item-details">
+            <label for="quantity1">Flash 32GB:</label>
+            <input type="number" id="quantity1" value="0" min="0" class="item-quantity">
+            <label for="price1">Price: ksh</label>
+            <input type="text" id="price1" value="900" class="item-price">
+          </div>
+          <div class="item-actions">
+            <button onclick="addToCart('Flash 32GB', 1)">Add to Cart</button>
+            <button onclick="addToWishList('Flash 32GB')">Add to Wish List</button>
+            <a href="https://wa.me/254748072275" target="_blank" title="Chat on WhatsApp">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:24px;"> Chat
+            </a>
+          </div>
+        </div>
+        <!-- Add other flash drives here (64GB, 16GB, etc.) using the same structure -->
+        <!-- ... -->
+        <div class="total">
+          Total Price: ksh <span id="totalPrice">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Memory Cards</h2>
+      <div class="item-list">
+        <!-- Example: Add your memory card items here as in your previous code -->
+        <!-- 32GB Memory Card -->
+        <div class="item">
+          <img src="memcard-32gb.png" alt="Memory Card 32GB" class="product"
+            onclick="showModal('memcard-32gb.png', 'Memory Card 32GB', 'Best quality, one year warranty, can hold up to 60 movies.')">
+          <div class="item-details">
+            <label for="mcquantity1">Memory Card 32GB:</label>
+            <input type="number" id="mcquantity1" value="0" min="0" class="item-quantity">
+            <label for="mcprice1">Price: ksh</label>
+            <input type="text" id="mcprice1" value="900" class="item-price">
+          </div>
+          <div class="item-actions">
+            <button onclick="addToCart('Memory Card 32GB', 'mc1')">Add to Cart</button>
+            <button onclick="addToWishList('Memory Card 32GB')">Add to Wish List</button>
+            <a href="https://wa.me/254748072275" target="_blank" title="Chat on WhatsApp">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:24px;"> Chat
+            </a>
+          </div>
+        </div>
+        <!-- Add other memory cards here (64GB, 16GB, etc.) using the same structure -->
+        <!-- ... -->
+        <div class="total">
+          Total Price: ksh <span id="mcTotalPrice">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Section -->
+    <div class="item-list" style="margin-top:20px;">
+      <h2>Cart</h2>
+      <ul id="cart"></ul>
+    </div>
+
+    <!-- Wish List Section -->
+    <div class="item-list" style="margin-top:20px;">
+      <h2>Wish List</h2>
+      <ul id="wishlist"></ul>
+    </div>
+    <!-- Modal for item details -->
+    <div id="itemModal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImg" src="" alt="">
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+      </div>
+    </div>
+    <div class="contact">
+      <strong>Contact:</strong> 
+      <a href="mailto:hilkartel@gmail.com">hilkartel@gmail.com</a> |
+      <a href="https://wa.me/254748072275" target="_blank">WhatsApp: 0748 072 275</a><br>
+      Location: Thiba North, Mwea
+    </div>
+  </div>
+  <footer>
+    <address>
+      <a href="mailto:hilkartel@gmail.com" style="color: #fff; text-decoration: underline;">
+        hilkartel@gmail.com
+      </a><br>
+      Location: Thiba North, Mwea
+    </address>
+  </footer>
+  <script>
+    // Get all quantity and price inputs
+    const quantityInputs = document.querySelectorAll('.item-quantity');
+    const priceInputs = document.querySelectorAll('.item-price');
+    // Get the total price display
+    const totalPriceDisplay = document.getElementById('totalPrice');
+    // Function to calculate and update the total price
+    function calculateTotalPrice() {
+      let total = 0;
+      for (let i = 0; i < quantityInputs.length; i++) {
+        const quantity = parseInt(quantityInputs[i].value);
+        const price = parseFloat(priceInputs[i].value);
+        if (!isNaN(quantity) && !isNaN(price)) {
+          total += quantity * price;
+        }
+      }
+      totalPriceDisplay.textContent = total.toFixed(2);
+    }
+    // Attach event listeners
+    quantityInputs.forEach(input => {
+      input.addEventListener('input', calculateTotalPrice);
+    });
+    priceInputs.forEach(input => {
+      input.addEventListener('input', calculateTotalPrice);
+    });
+
+    // Cart logic
+    const cart = {};
+
+    function addToCart(name, idx) {
+      let quantity, price;
+      if (typeof idx === 'number') {
+        quantity = parseInt(document.getElementById('quantity' + idx).value);
+        price = parseFloat(document.getElementById('price' + idx).value);
+      } else {
+        quantity = parseInt(document.getElementById('mcquantity' + idx.replace('mc', '')).value);
+        price = parseFloat(document.getElementById('mcprice' + idx.replace('mc', '')).value);
+      }
+      if (!quantity || quantity < 1 || isNaN(price)) return;
+      cart[name] = { quantity, price };
+      renderCart();
+      calculateTotalPrice();
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById('cart');
+      cartList.innerHTML = '';
+      let total = 0;
+      for (const [name, item] of Object.entries(cart)) {
+        const li = document.createElement('li');
+        li.textContent = `${name} - Qty: ${item.quantity} x Ksh ${item.price} = Ksh ${(item.quantity * item.price).toFixed(2)}`;
+        cartList.appendChild(li);
+        total += item.quantity * item.price;
+      }
+      // Add memory card subtotal
+      let mcTotal = 0;
+      for (let i = 0; i <= 5; i++) {
+        const qtyInput = document.getElementById('mcquantity' + i);
+        const priceInput = document.getElementById('mcprice' + i);
+        if (qtyInput && priceInput) {
+          const quantity = parseInt(qtyInput.value);
+          const price = parseFloat(priceInput.value);
+          if (!isNaN(quantity) && !isNaN(price)) {
+            mcTotal += quantity * price;
+          }
+        }
+      }
+      // Show subtotal (flash + memory cards)
+      const subtotal = total + mcTotal;
+      document.getElementById('totalPrice').textContent = subtotal.toFixed(2);
+      document.getElementById('mcTotalPrice').textContent = mcTotal.toFixed(2);
+    }
+
+    // Wish List logic
+    const wishList = new Set();
+
+    function addToWishList(name) {
+      wishList.add(name);
+      renderWishList();
+    }
+
+    function renderWishList() {
+      const wishListEl = document.getElementById('wishlist');
+      wishListEl.innerHTML = '';
+      wishList.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        wishListEl.appendChild(li);
+      });
+    }
+
+    // Search/filter logic
+    document.getElementById('searchBox').addEventListener('input', function() {
+      const search = this.value.toLowerCase();
+      document.querySelectorAll('.item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(search) ? '' : 'none';
+      });
+    });
+
+    // Function to calculate and update the total price for memory cards
+    function calculateMemoryCardTotal() {
+      let total = 0;
+      // Loop through memory card inputs (IDs start with mcquantity and mcprice)
+      for (let i = 0; i <= 5; i++) {
+        const qtyInput = document.getElementById('mcquantity' + i);
+        const priceInput = document.getElementById('mcprice' + i);
+        if (qtyInput && priceInput) {
+          const quantity = parseInt(qtyInput.value);
+          const price = parseFloat(priceInput.value);
+          if (!isNaN(quantity) && !isNaN(price)) {
+            total += quantity * price;
+          }
+        }
+      }
+      document.getElementById('mcTotalPrice').textContent = total.toFixed(2);
+    }
+
+    // Attach event listeners for memory card inputs
+    for (let i = 0; i <= 5; i++) {
+      const qtyInput = document.getElementById('mcquantity' + i);
+      const priceInput = document.getElementById('mcprice' + i);
+      if (qtyInput) qtyInput.addEventListener('input', calculateMemoryCardTotal);
+      if (priceInput) priceInput.addEventListener('input', calculateMemoryCardTotal);
+    }
+
+    // Modal logic
+    function showModal(img, title, desc) {
+      document.getElementById('modalImg').src = img;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('itemModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('itemModal').style.display = 'none';
+    }
+    window.onclick = function(event) {
+      const modal = document.getElementById('itemModal');
+      if (event.target === modal) closeModal();
+    };
+
+    // Call once on page load
+    calculateMemoryCardTotal();
+  </script>
+</body>
+</html>

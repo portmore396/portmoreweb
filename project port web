@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="style.css">
+    <head>
+        <title> Portmore Ent</title>
+        <style>
+        </style>
+        /* Optional CSS for better visual presentation */
+.item { 
+  margin-bottom: 10px;
+}
+.item-quantity { 
+  width: 50px;
+  text-align: center;
+}
+.item-price { 
+  width: 80px;
+  text-align: right;
+}
+.total-price { 
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="item">
+  <label for="quantity1">Item 1:</label>
+  <input type="number" id="quantity1" value="0" class="item-quantity">
+  <label for="price1">Price: $</label>
+  <input type="text" id="price1" value="10" class="item-price">
+</div>
+
+<div class="item">
+  <label for="quantity2">Item 2:</label>
+  <input type="number" id="quantity2" value="0" class="item-quantity">
+  <label for="price2">Price: $</label>
+  <input type="text" id="price2" value="20" class="item-price">
+</div>
+
+<div class="item">
+  <label for="quantity3">Item 3:</label>
+  <input type="number" id="quantity3" value="0" class="item-quantity">
+  <label for="price3">Price: $</label>
+  <input type="text" id="price3" value="30" class="item-price">
+</div>
+
+<p>Total Price: <span id="totalPrice">0</span></p>
+
+<script>
+// Get all quantity and price inputs
+const quantityInputs = document.querySelectorAll('.item-quantity');
+const priceInputs = document.querySelectorAll('.item-price');
+
+// Get the total price display
+const totalPriceDisplay = document.getElementById('totalPrice');
+
+// Function to calculate and update the total price
+function calculateTotalPrice() {
+  let total = 0;
+
+  // Loop through each item and calculate its subtotal
+  for (let i = 0; i < quantityInputs.length; i++) {
+    const quantity = parseInt(quantityInputs[i].value);
+    const price = parseFloat(priceInputs[i].value);
+
+    if (!isNaN(quantity) && !isNaN(price)) { // Ensure quantity and price are valid numbers
+      total += quantity * price;
+    }
+  }
+
+  // Update the total price display
+  totalPriceDisplay.textContent = total.toFixed(2); // Display with two decimal places
+}
+
+// Attach event listeners to quantity inputs to trigger recalculation
+quantityInputs.forEach(input => {
+  input.addEventListener('input', calculateTotalPrice);
+});
+
+// Attach event listeners to price inputs to trigger recalculation
+priceInputs.forEach(input => {
+  input.addEventListener('input', calculateTotalPrice);
+});
+</script>
+
+</body>
+</html>
+
+    </head>
+    <body>
+    </body>
+</html>
