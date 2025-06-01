@@ -941,48 +941,307 @@
       </div>
     </div>
 
-    <!-- Contact Section -->
-    <div id="contact" class="section contact-section">
-      <h2><i class="fas fa-envelope"></i> Contact Us</h2>
-      <div class="contact-grid">
-        <div class="contact-info">
-          <div class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <h3>Location</h3>
-              <p>Thiba North, Mwea</p>
+    <!-- After Memory Cards Section, before Contact Section -->
+    </div>
+  </div>
+
+  <!-- Shopping Cart Section -->
+  <div class="section cart-section">
+    <h2><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h2>
+    <div class="cart-container">
+      <div class="cart-items-container">
+        <ul id="cart-items">
+          <!-- Cart items will be added here dynamically -->
+        </ul>
+      </div>
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total">KSH 0</span>
+        </div>
+        <div class="cart-actions">
+          <button class="checkout-btn" onclick="checkout()">
+            <i class="fas fa-credit-card"></i> Checkout
+          </button>
+          <a href="https://wa.me/254748072275" class="whatsapp-checkout">
+            <i class="fab fa-whatsapp"></i> Order via WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Cart Section Styles */
+    .cart-section {
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      color: white;
+      border-radius: 15px;
+      margin: 40px auto;
+      padding: 30px;
+      max-width: 1000px;
+    }
+
+    .cart-section h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .cart-section h2::after {
+      background: linear-gradient(90deg, #00ffff, #1976d2);
+    }
+
+    .cart-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cart-items-container {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    #cart-items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .cart-item-name {
+      flex: 1;
+      font-size: 1em;
+      color: white;
+    }
+
+    .cart-item-price {
+      color: #00ffff;
+      font-size: 1em;
+      margin: 0 20px;
+    }
+
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .remove-item:hover {
+      background: rgba(255, 68, 68, 0.1);
+      transform: scale(1.1);
+    }
+
+    .cart-summary {
+      border-top: 2px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .cart-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .checkout-btn,
+    .whatsapp-checkout {
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .checkout-btn {
+      background: #00ffff;
+      color: black;
+    }
+
+    .whatsapp-checkout {
+      background: #25d366;
+      color: white;
+    }
+
+    .checkout-btn:hover,
+    .whatsapp-checkout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Custom Scrollbar for Cart Items */
+    .cart-items-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .cart-items-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .cart-items-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .cart-items-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Empty Cart State */
+    .cart-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .cart-empty i {
+      font-size: 3em;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .cart-section {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .cart-item-price {
+        margin: 5px 0;
+      }
+
+      .cart-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- Remove the floating cart styles and HTML -->
+  <style>
+    .floating-cart {
+      display: none;
+    }
+  </style>
+
+  <script>
+    // Update the cart display function to handle empty state
+    function updateCartDisplay() {
+      const cartList = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      
+      if (cartList) {
+        if (cart.items.length === 0) {
+          cartList.innerHTML = `
+            <div class="cart-empty">
+              <i class="fas fa-shopping-cart"></i>
+              <p>Your cart is empty</p>
             </div>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-phone"></i>
-            <div>
-              <h3>Phone</h3>
-              <p><a href="tel:0748072275">0748 072 275</a></p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-envelope"></i>
-            <div>
-              <h3>Email</h3>
-              <p><a href="mailto:hilkartel@gmail.com">hilkartel@gmail.com</a></p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <i class="fab fa-whatsapp"></i>
-            <div>
-              <h3>WhatsApp</h3>
-              <p><a href="https://wa.me/254748072275" target="_blank">Chat with us</a></p>
-            </div>
+          `;
+        } else {
+          cartList.innerHTML = cart.items.map((item, index) => `
+            <li class="cart-item">
+              <span class="cart-item-name">${item.name}</span>
+              <span class="cart-item-price">KSH ${item.price.toLocaleString()}</span>
+              <button class="remove-item" onclick="removeFromCart(${index})">
+                <i class="fas fa-times"></i>
+              </button>
+            </li>
+          `).join('');
+        }
+
+        const total = cart.items.reduce((sum, item) => sum + item.price, 0);
+        cartTotal.textContent = `KSH ${total.toLocaleString()}`;
+      }
+    }
+  </script>
+
+  <!-- Contact Section -->
+  <div id="contact" class="section contact-section">
+    <h2><i class="fas fa-envelope"></i> Contact Us</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <h3>Location</h3>
+            <p>Thiba North, Mwea</p>
           </div>
         </div>
-        <div class="business-hours">
-          <h3><i class="fas fa-clock"></i> Business Hours</h3>
-          <ul>
-            <li><span>Monday - Friday:</span> 8:00 AM - 6:00 PM</li>
-            <li><span>Saturday:</span> 9:00 AM - 5:00 PM</li>
-            <li><span>Sunday:</span> 10:00 AM - 2:00 PM</li>
-          </ul>
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <div>
+            <h3>Phone</h3>
+            <p><a href="tel:0748072275">0748 072 275</a></p>
+          </div>
         </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <h3>Email</h3>
+            <p><a href="mailto:hilkartel@gmail.com">hilkartel@gmail.com</a></p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-whatsapp"></i>
+          <div>
+            <h3>WhatsApp</h3>
+            <p><a href="https://wa.me/254748072275" target="_blank">Chat with us</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="business-hours">
+        <h3><i class="fas fa-clock"></i> Business Hours</h3>
+        <ul>
+          <li><span>Monday - Friday:</span> 8:00 AM - 6:00 PM</li>
+          <li><span>Saturday:</span> 9:00 AM - 5:00 PM</li>
+          <li><span>Sunday:</span> 10:00 AM - 2:00 PM</li>
+        </ul>
       </div>
     </div>
   </div>
