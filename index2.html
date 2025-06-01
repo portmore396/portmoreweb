@@ -960,10 +960,10 @@
           <span id="cart-total">KSH 0</span>
         </div>
         <div class="cart-actions">
-          <button class="checkout-btn" onclick="checkout()">
-            <i class="fas fa-credit-card"></i> Checkout
+          <button class="checkout-btn" onclick="initiateCheckout()">
+            <i class="fas fa-credit-card"></i> Pay with M-Pesa
           </button>
-          <a href="https://wa.me/254748072275" class="whatsapp-checkout">
+          <a href="#" class="whatsapp-checkout" onclick="sendToWhatsApp(); return false;">
             <i class="fab fa-whatsapp"></i> Order via WhatsApp
           </a>
         </div>
@@ -1995,6 +1995,699 @@
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+
+  <!-- Update the checkout button and add payment modal -->
+  <div class="cart-actions">
+    <button class="checkout-btn" onclick="initiateCheckout()">
+      <i class="fas fa-credit-card"></i> Pay with M-Pesa
+    </button>
+    <a href="#" class="whatsapp-checkout" onclick="sendToWhatsApp(); return false;">
+      <i class="fab fa-whatsapp"></i> Order via WhatsApp
+    </a>
+  </div>
+
+  <!-- Add Payment Modal -->
+  <div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-money-bill-wave"></i> M-Pesa Payment</h3>
+        <button class="close-modal" onclick="closePaymentModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-options">
+          <h4>Choose Payment Method:</h4>
+          <div class="payment-method-tabs">
+            <button class="tab-btn active" onclick="switchPaymentMethod('ussd')">
+              <i class="fas fa-mobile-alt"></i> Quick USSD
+            </button>
+            <button class="tab-btn" onclick="switchPaymentMethod('manual')">
+              <i class="fas fa-hand-pointer"></i> Manual Payment
+            </button>
+          </div>
+
+          <!-- USSD Method -->
+          <div id="ussdMethod" class="payment-method">
+            <div class="phone-input">
+              <label for="mpesaNumber">Enter your M-Pesa number:</label>
+              <div class="input-group">
+                <span class="prefix">+254</span>
+                <input type="tel" id="mpesaNumber" placeholder="7XX XXX XXX" 
+                       maxlength="12" pattern="[0-12]{12}"
+                       oninput="formatPhoneNumber(this)"
+                       onkeypress="return onlyNumbers(event)">
+              </div>
+              <small class="input-hint">Enter 9 digits without leading zero</small>
+            </div>
+            <div class="payment-details">
+              <div class="detail-item">
+                <span>Amount to Pay:</span>
+                <span class="highlight" id="ussd-amount">KSH 0</span>
+              </div>
+              <div class="detail-item">
+                <span>Till Number:</span>
+                <span class="highlight">9005877</span>
+              </div>
+            </div>
+            <button onclick="triggerUSSD()" class="ussd-btn">
+              <i class="fas fa-phone"></i> Trigger M-Pesa Payment
+            </button>
+          </div>
+
+          <!-- Manual Method -->
+          <div id="manualMethod" class="payment-method" style="display: none;">
+            <div class="payment-instructions">
+              <h4>Follow these steps to complete your payment:</h4>
+              <ol>
+                <li>Go to M-Pesa menu on your phone</li>
+                <li>Select "Lipa na M-Pesa"</li>
+                <li>Select "Buy Goods and Services"</li>
+                <li>Enter Till Number: <strong>9005877</strong></li>
+                <li>Enter Amount: <strong><span id="modal-amount">0</span></strong></li>
+                <li>Enter your M-Pesa PIN</li>
+                <li>Confirm the transaction</li>
+              </ol>
+            </div>
+            <div class="payment-details">
+              <div class="detail-item">
+                <span>Till Number:</span>
+                <span class="highlight">9005877</span>
+              </div>
+              <div class="detail-item">
+                <span>Amount:</span>
+                <span class="highlight" id="payment-amount">KSH 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="payment-confirmation">
+          <p>After payment, click the button below to notify us:</p>
+          <button onclick="confirmPayment()" class="confirm-btn">
+            <i class="fas fa-check-circle"></i> I've Made the Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Payment Modal Styles */
+    .payment-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      position: relative;
+      background: white;
+      width: 90%;
+      max-width: 500px;
+      margin: 50px auto;
+      border-radius: 15px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      color: white;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    .modal-body {
+      padding: 20px;
+      color: #333;
+    }
+
+    .payment-instructions {
+      margin-bottom: 20px;
+    }
+
+    .payment-instructions ol {
+      padding-left: 20px;
+    }
+
+    .payment-instructions li {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+
+    .payment-details {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .highlight {
+      color: #1976d2;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .payment-confirmation {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .confirm-btn {
+      background: #00c853;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 15px auto;
+      transition: all 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+      background: #00b34a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        margin: 20px auto;
+      }
+    }
+  </style>
+
+  <style>
+    /* Add these new styles */
+    .payment-method-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+    }
+
+    .phone-input {
+      margin-bottom: 20px;
+    }
+
+    .phone-input label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .prefix {
+      background: #f5f5f5;
+      padding: 12px;
+      color: #555;
+      border-right: 1px solid #ddd;
+    }
+
+    #mpesaNumber {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+    }
+
+    .input-hint {
+      display: block;
+      margin-top: 5px;
+      color: #666;
+      font-size: 0.85em;
+    }
+
+    .ussd-btn {
+      width: 100%;
+      padding: 15px;
+      background: #00c853;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .ussd-btn:hover {
+      background: #00b34a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
+    }
+
+    .ussd-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+  </style>
+
+  <script>
+    // Add these new functions
+    function switchPaymentMethod(method) {
+      const ussdMethod = document.getElementById('ussdMethod');
+      const manualMethod = document.getElementById('manualMethod');
+      const tabs = document.querySelectorAll('.tab-btn');
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      if (method === 'ussd') {
+        ussdMethod.style.display = 'block';
+        manualMethod.style.display = 'none';
+        tabs[0].classList.add('active');
+      } else {
+        ussdMethod.style.display = 'none';
+        manualMethod.style.display = 'block';
+        tabs[1].classList.add('active');
+      }
+    }
+
+    function formatPhoneNumber(input) {
+      // Remove non-numeric characters
+      let number = input.value.replace(/\D/g, '');
+      
+      // Ensure the number doesn't exceed 9 digits
+      if (number.length > 9) {
+        number = number.slice(0, 9);
+      }
+      
+      // Format the number with spaces after every 3 digits
+      if (number.length > 3) {
+        number = number.replace(/(\d{3})(\d{0,3})(\d{0,3})/, '$1 $2 $3').trim();
+      }
+      
+      input.value = number;
+      
+      // Update the trigger button state
+      const triggerBtn = document.querySelector('.ussd-btn');
+      if (triggerBtn) {
+        triggerBtn.disabled = number.replace(/\s/g, '').length !== 9;
+      }
+    }
+
+    function onlyNumbers(event) {
+      // Allow only numbers, backspace, delete, and arrow keys
+      const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+      if (!allowedKeys.includes(event.key) && !/[0-9]/.test(event.key)) {
+        event.preventDefault();
+        return false;
+      }
+      return true;
+    }
+
+    function triggerUSSD() {
+      const number = document.getElementById('mpesaNumber').value.replace(/\s/g, '');
+      const total = cart.items.reduce((sum, item) => sum + item.price, 0);
+      
+      if (number.length !== 9) {
+        showToast('Please enter a valid 9-digit phone number', 'error');
+        return;
+      }
+
+      // Log the number for debugging
+      console.log('Phone number:', number, 'Length:', number.length);
+
+      // Construct the USSD string for M-Pesa payment
+      const ussdString = encodeURIComponent(`*247*9005877*${total}#`);
+      
+      // Try different USSD formats
+      const ussdFormats = [
+        `tel:${ussdString}`,
+        `tel:**${ussdString}`,
+        `tel:*${ussdString}`,
+        `tel:*334#`
+      ];
+
+      // Try each format
+      function tryUSSDFormat(index) {
+        if (index < ussdFormats.length) {
+          console.log('Trying USSD format:', ussdFormats[index]); // Debug log
+          window.location.href = ussdFormats[index];
+          
+          showToast('If USSD dialog didn\'t appear, trying alternate format...', 'info');
+          
+          setTimeout(() => tryUSSDFormat(index + 1), 1500);
+        } else {
+          showToast('USSD trigger failed. Please use manual payment method.', 'error');
+          switchPaymentMethod('manual');
+        }
+      }
+
+      tryUSSDFormat(0);
+    }
+
+    // Update the phone input HTML to be more explicit about the format
+    const phoneInput = document.getElementById('mpesaNumber');
+    if (phoneInput) {
+      phoneInput.placeholder = '7XX XXX XXX';
+      phoneInput.setAttribute('inputmode', 'numeric');
+      phoneInput.setAttribute('autocomplete', 'off');
+      
+      // Add input event listener for real-time validation
+      phoneInput.addEventListener('input', function() {
+        const number = this.value.replace(/\s/g, '');
+        const isValid = number.length === 9;
+        
+        this.classList.toggle('valid', isValid);
+        this.classList.toggle('invalid', !isValid && number.length > 0);
+        
+        // Update helper text
+        const helperText = this.parentElement.querySelector('.input-hint');
+        if (helperText) {
+          if (number.length === 0) {
+            helperText.textContent = 'Enter 9 digits without leading zero';
+            helperText.className = 'input-hint';
+          } else if (!isValid) {
+            helperText.textContent = `${9 - number.length} more digits needed`;
+            helperText.className = 'input-hint error';
+          } else {
+            helperText.textContent = 'Valid phone number';
+            helperText.className = 'input-hint success';
+          }
+        }
+      });
+    }
+
+    // Add these styles for better input feedback
+    const inputStyles = `
+      #mpesaNumber.valid {
+        border-color: #00c853;
+        background-color: #f0fff3;
+      }
+
+      #mpesaNumber.invalid {
+        border-color: #ff3d00;
+        background-color: #fff5f5;
+      }
+
+      .input-hint.error {
+        color: #ff3d00;
+      }
+
+      .input-hint.success {
+        color: #00c853;
+      }
+
+      .input-group {
+        border: 2px solid #ddd;
+        transition: all 0.3s ease;
+      }
+
+      .input-group:focus-within {
+        border-color: #1976d2;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+      }
+
+      #mpesaNumber {
+        width: 100%;
+        font-size: 1.2em;
+        letter-spacing: 1px;
+      }
+
+      .prefix {
+        font-size: 1.2em;
+        color: #666;
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-right: 2px solid #ddd;
+      }
+    `;
+
+    // Add the styles to the document
+    const styleElement = document.createElement('style');
+    styleElement.textContent = inputStyles;
+    document.head.appendChild(styleElement);
+
+    // Add function to handle direct M-Pesa menu
+    function openMpesaMenu() {
+      window.location.href = 'tel:*334#';
+    }
+
+    // Update the payment modal to include a direct M-Pesa menu button
+    document.querySelector('.payment-options').insertAdjacentHTML('beforeend', `
+      <div class="mpesa-menu-option">
+        <button onclick="openMpesaMenu()" class="mpesa-menu-btn">
+          <i class="fas fa-mobile-alt"></i> Open M-Pesa Menu
+        </button>
+        <small>If direct payment doesn't work, use this to open M-Pesa menu</small>
+      </div>
+    `);
+
+    // Add styles for the new button
+    const style = document.createElement('style');
+    style.textContent = `
+      .mpesa-menu-option {
+        margin-top: 20px;
+        text-align: center;
+      }
+      
+      .mpesa-menu-btn {
+        background: #00a884;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 1em;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+      
+      .mpesa-menu-btn:hover {
+        background: #008f6f;
+        transform: translateY(-2px);
+      }
+      
+      .mpesa-menu-option small {
+        display: block;
+        margin-top: 8px;
+        color: #666;
+        font-size: 0.85em;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Update the showToast function to handle different types
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+  </script>
+
+  <style>
+    /* Update Toast Styles for different types */
+    .toast.error {
+      background: rgba(244, 67, 54, 0.9);
+      color: white;
+    }
+
+    .toast.info {
+      background: rgba(33, 150, 243, 0.9);
+      color: white;
+    }
+  </style>
+
+  <script>
+    function initiateCheckout() {
+      const modal = document.getElementById('paymentModal');
+      const modalAmount = document.getElementById('modal-amount');
+      const paymentAmount = document.getElementById('payment-amount');
+      const total = cart.items.reduce((sum, item) => sum + item.price, 0);
+      
+      modalAmount.textContent = `KSH ${total.toLocaleString()}`;
+      paymentAmount.textContent = `KSH ${total.toLocaleString()}`;
+      modal.style.display = 'block';
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('paymentModal');
+      modal.style.display = 'none';
+    }
+
+    function formatCartItems() {
+      return cart.items.map(item => 
+        `${item.name}: KSH ${item.price.toLocaleString()}`
+      ).join('\n');
+    }
+
+    function sendToWhatsApp() {
+      const total = cart.items.reduce((sum, item) => sum + item.price, 0);
+      const items = formatCartItems();
+      const message = `New Order:\n\n${items}\n\nTotal: KSH ${total.toLocaleString()}`;
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/254748072275?text=${encodedMessage}`, '_blank');
+    }
+
+    function confirmPayment() {
+      const total = cart.items.reduce((sum, item) => sum + item.price, 0);
+      const items = formatCartItems();
+      const message = `Payment Confirmation:\n\nI've completed M-Pesa payment for:\n${items}\n\nTotal Amount: KSH ${total.toLocaleString()}\nTill Number: 9005877`;
+      const encodedMessage = encodeURIComponent(message);
+      
+      // Send payment confirmation via WhatsApp
+      window.open(`https://wa.me/254748072275?text=${encodedMessage}`, '_blank');
+      
+      // Show success message
+      showToast('Thank you for your payment! We\'ll process your order soon.');
+      
+      // Clear cart
+      cart.items = [];
+      updateCartDisplay();
+      
+      // Close modal
+      closePaymentModal();
+    }
+
+    // Update showToast function to handle success messages
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+  </script>
+
+  <style>
+    /* Update Toast Styles */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      z-index: 1001;
+      opacity: 0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .toast.success {
+      background: rgba(0, 200, 83, 0.9);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .toast.show {
