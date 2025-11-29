@@ -1272,7 +1272,7 @@
         <ul>
           <li><i class="fas fa-phone"></i> 0713 630 807</li>
           <li><i class="fas fa-envelope"></i> hilkartel@gmail.com</li>
-          <li><i class="fas fa-map-marker-alt"></i> Thiba North, Mwea</li>
+          <li><i class="fas fa-map-marker-alt"></i> Lainisha sacco backstreet, Mwea</li>
         </ul>
       </div>
     </div>
@@ -2412,7 +2412,7 @@
       console.log('Phone number:', number, 'Length:', number.length);
 
       // Construct the USSD string for M-Pesa payment
-      const ussdString = encodeURIComponent(`*247*9005877*${total}#`);
+      const ussdString = encodeURIComponent(`*247*6922627*${total}#`);
       
       // Try different USSD formats
       const ussdFormats = [
@@ -2635,7 +2635,7 @@
     function confirmPayment() {
       const total = cart.items.reduce((sum, item) => sum + item.price, 0);
       const items = formatCartItems();
-      const message = `Payment Confirmation:\n\nI've completed M-Pesa payment for:\n${items}\n\nTotal Amount: KSH ${total.toLocaleString()}\nTill Number: 9005877`;
+      const message = `Payment Confirmation:\n\nI've completed M-Pesa payment for:\n${items}\n\nTotal Amount: KSH ${total.toLocaleString()}\nTill Number: 6922627`;
       const encodedMessage = encodeURIComponent(message);
       
       // Send payment confirmation via WhatsApp
@@ -2697,4 +2697,5 @@
   </style>
 </body>
 </html>
+
 
