@@ -865,6 +865,20 @@ h1::after, h2::after {
     color: white;
 }
 
+.service-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.service-card:hover .service-image {
+    transform: scale(1.05);
+}
+
 .service-badge {
     position: absolute;
     top: 20px;
