@@ -2508,14 +2508,14 @@
       console.log('Phone number:', number, 'Length:', number.length);
 
       // Construct the USSD string for M-Pesa payment
-      const ussdString = encodeURIComponent(`*247*6922627*${total}#`);
+      const ussdString = `*334*1*1*${total}*6922627#`;
       
       // Try different USSD formats
       const ussdFormats = [
         `tel:${ussdString}`,
-        `tel:**${ussdString}`,
-        `tel:*${ussdString}`,
-        `tel:*334#`
+        `tel:*334*1*1*${total}*6922627#`,
+        `tel:*334#`,
+        `*334*1*1*${total}*6922627#`
       ];
 
       // Try each format
